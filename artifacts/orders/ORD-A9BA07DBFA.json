@@ -1,0 +1,54 @@
+{
+  "order_id": "ORD-A9BA07DBFA",
+  "created_at": "2026-06-01",
+  "status": "confirmed",
+  "customer": {
+    "name": "",
+    "phone": "",
+    "email": "",
+    "shipping_address": "9 Võ Thị Sáu, Biên Hòa, Đồng Nai"
+  },
+  "items": [
+    {
+      "product_id": "HD-002",
+      "sku": "ANK-Q20I",
+      "name": "Soundcore Q20i",
+      "category": "headphone",
+      "quantity": 2,
+      "unit_price": 1290000,
+      "line_total": 2580000
+    },
+    {
+      "product_id": "MS-001",
+      "sku": "LOG-PEBBLE2-M350S",
+      "name": "Logitech Pebble 2 M350s",
+      "category": "mouse",
+      "quantity": 3,
+      "unit_price": 690000,
+      "line_total": 2070000
+    },
+    {
+      "product_id": "WC-001",
+      "sku": "LOG-BRIO500",
+      "name": "Logitech Brio 500",
+      "category": "webcam",
+      "quantity": 1,
+      "unit_price": 2890000,
+      "line_total": 2890000
+    }
+  ],
+  "pricing": {
+    "currency": "VND",
+    "subtotal": 7540000,
+    "discount_rate": 0.1,
+    "discount_amount": 754000,
+    "final_total": 6786000
+  },
+  "discount": {
+    "campaign_code": "",
+    "customer_tier": "standard"
+  },
+  "notes": "",
+  "save_path": "artifacts/orders/ORD-A9BA07DBFA.json",
+  "source": "llm-order-agent"
+}

@@ -1,0 +1,63 @@
+{
+  "order_id": "ORD-78A72B0BEA",
+  "created_at": "2026-06-01",
+  "status": "confirmed",
+  "customer": {
+    "name": "",
+    "phone": "",
+    "email": "",
+    "shipping_address": "Tầng 8, 201 Võ Văn Tần, Quận 3, TP.HCM"
+  },
+  "items": [
+    {
+      "product_id": "KB-001",
+      "sku": "KEY-K2MAX",
+      "name": "Keychron K2 Max",
+      "category": "keyboard",
+      "quantity": 1,
+      "unit_price": 2490000,
+      "line_total": 2490000
+    },
+    {
+      "product_id": "LT-003",
+      "sku": "DEL-INS14-7440",
+      "name": "Dell Inspiron 14",
+      "category": "laptop",
+      "quantity": 1,
+      "unit_price": 14500000,
+      "line_total": 14500000
+    },
+    {
+      "product_id": "MN-003",
+      "sku": "XIA-A24I",
+      "name": "Xiaomi A24i",
+      "category": "monitor",
+      "quantity": 2,
+      "unit_price": 2490000,
+      "line_total": 4980000
+    },
+    {
+      "product_id": "WC-001",
+      "sku": "LOG-BRIO500",
+      "name": "Logitech Brio 500",
+      "category": "webcam",
+      "quantity": 1,
+      "unit_price": 2890000,
+      "line_total": 2890000
+    }
+  ],
+  "pricing": {
+    "currency": "VND",
+    "subtotal": 24860000,
+    "discount_rate": 0.1,
+    "discount_amount": 2486000,
+    "final_total": 22374000
+  },
+  "discount": {
+    "campaign_code": "",
+    "customer_tier": "standard"
+  },
+  "notes": "",
+  "save_path": "artifacts/orders/ORD-78A72B0BEA.json",
+  "source": "llm-order-agent"
+}

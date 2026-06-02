@@ -1,0 +1,54 @@
+{
+  "order_id": "ORD-41201260E2",
+  "created_at": "2026-06-01",
+  "status": "confirmed",
+  "customer": {
+    "name": "Nguyễn Lan Anh",
+    "phone": "0901234567",
+    "email": "lananh@example.com",
+    "shipping_address": "18 Nguyễn Huệ, Quận 1, TP.HCM"
+  },
+  "items": [
+    {
+      "product_id": "LT-001",
+      "sku": "ROG-G14-2026",
+      "name": "ASUS ROG Zephyrus G14",
+      "category": "laptop",
+      "quantity": 1,
+      "unit_price": 32900000,
+      "line_total": 32900000
+    },
+    {
+      "product_id": "MN-002",
+      "sku": "LG-27GP850B",
+      "name": "LG UltraGear 27GP850-B",
+      "category": "monitor",
+      "quantity": 1,
+      "unit_price": 7990000,
+      "line_total": 7990000
+    },
+    {
+      "product_id": "MS-001",
+      "sku": "LOG-PEBBLE2-M350S",
+      "name": "Logitech Pebble 2 M350s",
+      "category": "mouse",
+      "quantity": 2,
+      "unit_price": 690000,
+      "line_total": 1380000
+    }
+  ],
+  "pricing": {
+    "currency": "VND",
+    "subtotal": 42270000,
+    "discount_rate": 0.1,
+    "discount_amount": 4227000,
+    "final_total": 38043000
+  },
+  "discount": {
+    "campaign_code": "",
+    "customer_tier": "standard"
+  },
+  "notes": "",
+  "save_path": "artifacts/orders/ORD-41201260E2.json",
+  "source": "llm-order-agent"
+}
