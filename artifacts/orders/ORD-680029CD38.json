@@ -1,0 +1,63 @@
+{
+  "order_id": "ORD-680029CD38",
+  "created_at": "2026-06-01",
+  "status": "confirmed",
+  "customer": {
+    "name": "Lê Minh Khôi",
+    "phone": "0911222333",
+    "email": "leminhkhoi@example.com",
+    "shipping_address": "45 Trần Phú, Hải Châu, Đà Nẵng"
+  },
+  "items": [
+    {
+      "product_id": "DK-001",
+      "sku": "ANK-563-DOCK",
+      "name": "Anker 563 USB-C Dock",
+      "category": "dock",
+      "quantity": 1,
+      "unit_price": 4990000,
+      "line_total": 4990000
+    },
+    {
+      "product_id": "LT-002",
+      "sku": "APL-MBA-M3-13",
+      "name": "MacBook Air M3 13",
+      "category": "laptop",
+      "quantity": 1,
+      "unit_price": 28900000,
+      "line_total": 28900000
+    },
+    {
+      "product_id": "SP-001",
+      "sku": "SAM-T7SHIELD-2TB",
+      "name": "Samsung T7 Shield 2TB",
+      "category": "storage",
+      "quantity": 1,
+      "unit_price": 4190000,
+      "line_total": 4190000
+    },
+    {
+      "product_id": "ST-001",
+      "sku": "RDS-MSTAND",
+      "name": "Rain Design mStand",
+      "category": "stand",
+      "quantity": 1,
+      "unit_price": 1290000,
+      "line_total": 1290000
+    }
+  ],
+  "pricing": {
+    "currency": "VND",
+    "subtotal": 39370000,
+    "discount_rate": 0.2,
+    "discount_amount": 7874000,
+    "final_total": 31496000
+  },
+  "discount": {
+    "campaign_code": "FLASH-20",
+    "customer_tier": "standard"
+  },
+  "notes": "",
+  "save_path": "artifacts/orders/ORD-680029CD38.json",
+  "source": "llm-order-agent"
+}

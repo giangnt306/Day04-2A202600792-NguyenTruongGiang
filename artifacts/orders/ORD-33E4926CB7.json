@@ -40,12 +40,12 @@
   "pricing": {
     "currency": "VND",
     "subtotal": 7540000,
-    "discount_rate": 0.1,
-    "discount_amount": 754000,
-    "final_total": 6786000
+    "discount_rate": 0.2,
+    "discount_amount": 1508000,
+    "final_total": 6032000
   },
   "discount": {
-    "campaign_code": "",
+    "campaign_code": "FLASH-20",
     "customer_tier": "standard"
   },
   "notes": "",

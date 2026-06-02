@@ -1,12 +1,12 @@
 {
-  "order_id": "ORD-DF097E32EC",
+  "order_id": "ORD-0E612B45CD",
   "created_at": "2026-06-01",
   "status": "confirmed",
   "customer": {
-    "name": "Trần Hoàng Anh",
-    "phone": "0982345678",
-    "email": "hoanganh@example.com",
-    "shipping_address": "102 Lê Văn Sỹ, Phú Nhuận, TP.HCM"
+    "name": "Linh Phạm",
+    "phone": "0913002244",
+    "email": "linhpham.pm@example.com",
+    "shipping_address": "55 Nguyễn Đình Chiểu, Hai Bà Trưng, Hà Nội"
   },
   "items": [
     {
@@ -37,27 +37,27 @@
       "line_total": 18900000
     },
     {
-      "product_id": "MN-001",
-      "sku": "DEL-U2724D",
-      "name": "Dell UltraSharp U2724D",
+      "product_id": "MN-004",
+      "sku": "SAM-VFS6-34",
+      "name": "Samsung ViewFinity S6 34",
       "category": "monitor",
-      "quantity": 1,
-      "unit_price": 8990000,
-      "line_total": 8990000
+      "quantity": 2,
+      "unit_price": 12990000,
+      "line_total": 25980000
     }
   ],
   "pricing": {
     "currency": "VND",
-    "subtotal": 35670000,
-    "discount_rate": 0.2,
-    "discount_amount": 7134000,
-    "final_total": 28536000
+    "subtotal": 52660000,
+    "discount_rate": 0.1,
+    "discount_amount": 5266000,
+    "final_total": 47394000
   },
   "discount": {
-    "campaign_code": "FLASH-20",
+    "campaign_code": "FLASH-10",
     "customer_tier": "standard"
   },
   "notes": "",
-  "save_path": "artifacts/orders/ORD-DF097E32EC.json",
+  "save_path": "artifacts/orders/ORD-0E612B45CD.json",
   "source": "llm-order-agent"
 }
