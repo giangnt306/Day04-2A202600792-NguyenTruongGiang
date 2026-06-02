@@ -15,6 +15,9 @@ if str(ROOT_DIR) not in sys.path:
 
 from src.core.llm import judge_answer_with_llm
 
+ALLOWED_WEIGHT_KEYS = {"json_output", "tools", "llm_judge"}
+IGNORED_EXPECTED_KEYS = {"created_at"}
+
 
 @dataclass
 class CaseScore:
@@ -25,7 +28,17 @@ class CaseScore:
 
 
 def load_cases(path: Path) -> list[dict[str, Any]]:
-    return json.loads(path.read_text(encoding="utf-8"))
+    cases = json.loads(path.read_text(encoding="utf-8"))
+    for case in cases:
+        validate_case_config(case)
+    return cases
+
+
+def validate_case_config(case: dict[str, Any]) -> None:
+    weights = case.get("weights", {})
+    unknown = sorted(set(weights) - ALLOWED_WEIGHT_KEYS)
+    if unknown:
+        raise ValueError(f"Case {case.get('id', '<unknown>')} has unsupported weight keys: {unknown}")
 
 
 def normalize_text(value: str) -> str:
@@ -75,6 +88,8 @@ def compare_values(expected: Any, actual: Any, *, path: str = "root") -> list[st
         if not isinstance(actual, dict):
             return [f"{path}: expected object, got {type(actual).__name__}."]
         for key, value in expected.items():
+            if key in IGNORED_EXPECTED_KEYS:
+                continue
             if key not in actual:
                 errors.append(f"{path}.{key}: missing key.")
                 continue
@@ -205,7 +220,7 @@ def grade_result(
     return CaseScore(
         case_id=case["id"],
         score=round(earned, 2),
-        max_score=float(sum(weights.values())),
+        max_score=float(sum(weights.get(key, 0) for key in ALLOWED_WEIGHT_KEYS)),
         feedback=feedback,
     )
 
@@ -247,6 +262,10 @@ def main() -> int:
         raise SystemExit(f"Module {args.module} does not expose run_agent()")
 
     cases = load_cases(Path(args.cases))
+    effective_judge_provider = args.judge_provider
+    if effective_judge_provider is None and any(case["weights"].get("llm_judge", 0) > 0 for case in cases):
+        effective_judge_provider = args.provider
+
     scores: list[CaseScore] = []
     for case in cases:
         raw_result = module.run_agent(
@@ -260,7 +279,7 @@ def main() -> int:
             grade_result(
                 result,
                 case,
-                judge_provider=args.judge_provider,
+                judge_provider=effective_judge_provider,
                 judge_model_name=args.judge_model_name,
             )
         )

@@ -1,56 +1,50 @@
 # Rubric
 
-## What The Grader Actually Checks
+## What The Grader Checks
 
-This lab is graded mainly from two things:
+The grader combines deterministic behavior checks with an LLM judge.
 
-1. saved JSON correctness
-2. tool usage correctness
+It looks at:
 
-The goal is to help students understand that prompt engineering affects real measurable behavior.
+- saved JSON correctness
+- tool usage correctness
+- final answer quality
 
-## 1. Saved JSON Scoring
+## Save Cases
 
-For normal save cases, the grader compares your saved order JSON against the expected fixture in `data/expected_orders/`.
+For normal order-creation cases, the grader checks:
 
-It checks fields like:
+- the returned `saved_order`
+- the saved file in `artifacts/orders/`
+- the JSON content against `data/expected_orders/`
+- the required tool sequence
+- the final answer against a rubric
 
-- customer name
-- phone
-- email
-- shipping address
-- exact product IDs
-- quantities
-- prices
-- discount rate
-- final total
-- deterministic order ID
-- save path
+Typical weight:
 
-The grader also checks that the saved file actually exists on disk.
+- `json_output`: 70
+- `tools`: 20
+- `llm_judge`: 10
 
-If your JSON is wrong, it usually means:
+`created_at` is ignored during JSON comparison.
 
-- the prompt allowed guessing
-- the tool schema was too weak
-- the model skipped or misused a validation step
+## Non-Save Cases
 
-## 2. Non-Save Case Scoring
+For clarification, refusal, and stock-failure cases, the grader checks:
 
-For clarification and guardrail cases, the grader checks that the agent does **not** save an order.
+- no order was saved
+- the tool trace matches the expected behavior
+- the final answer fits the case rubric
 
-Examples:
+Typical weight:
 
-- missing email
-- missing shipping address
-- fake invoice request
-- “ignore stock” request
+- `json_output`: 55
+- `tools`: 25
+- `llm_judge`: 20
 
-If an order is saved in those cases, the score should drop heavily.
+## Tool Expectations
 
-## 3. Tool Usage Scoring
-
-For normal successful cases, the grader expects this workflow:
+For valid orders, the expected workflow is:
 
 1. `list_products`
 2. `get_product_details`
@@ -58,98 +52,28 @@ For normal successful cases, the grader expects this workflow:
 4. `calculate_order_totals`
 5. `save_order`
 
-For clarification and refusal cases, the expected tool usage is usually:
+For clarification and refusal cases, the expected tool usage is usually no tools.
 
-- no tool calls
+## How Students Lose Points
 
-If your model starts searching too early or saves too early, that is treated as a prompt/schema/guardrail failure.
+- prompt is too vague, so the model acts too early
+- tool schema is too loose, so arguments are missing or wrong
+- guardrails are weak, so the model accepts invalid requests
+- grounding is weak, so the saved JSON is wrong
+- clarification/refusal answer is low quality, so the LLM judge deducts points
 
-## 4. What The Current Grader Does Not Strongly Score
+## Score Interpretation
 
-The current grader does **not** heavily score response wording anymore.
+- `90-100`: strong control over behavior
+- `80-89`: mostly correct, a few quality or workflow issues
+- `65-79`: partial control, still too loose
+- `0-64`: weak prompt/schema/guardrail design
 
-That was intentional.
+## Important Note
 
-We removed brittle keyword-based answer scoring because it overfit wording instead of measuring actual agent behavior.
+This lab is not only about business logic. Low scores often come from weak prompt engineering:
 
-So the main score now comes from:
-
-- the saved artifact
-- the tool trace
-
-There is optional LLM judging support, but the main rubric is mostly deterministic.
-
-## 5. How Students Usually Lose Points
-
-### Weak prompt
-
-Common result:
-
-- tool calls begin before required customer fields exist
-- refusal cases still call tools
-- the model saves invalid orders
-
-### Weak tool schema
-
-Common result:
-
-- arguments are vague or incomplete
-- required fields are omitted
-- the model skips intermediate validation
-
-### Weak guardrails
-
-Common result:
-
-- the model accepts stock bypass
-- the model accepts fake discounts
-- the model accepts fake invoice behavior
-
-### Weak grounding
-
-Common result:
-
-- wrong order ID
-- wrong discount
-- wrong save path
-- missing customer information
-- wrong saved JSON
-
-## 6. Performance Bands
-
-### `90-100`
-
-Strong work.
-
-The agent behaves correctly, saves the expected JSON, avoids invalid saves, and follows the intended workflow.
-
-### `80-89`
-
-Mostly correct.
-
-Usually there is one smaller tool-trace or payload issue.
-
-### `65-79`
-
-Partially working.
-
-The workflow exists, but the agent is still too loose or inconsistent.
-
-### `0-64`
-
-Weak result.
-
-This usually means the prompt, schema, or guardrails are not controlling the agent well enough.
-
-## 7. Important Note For Students
-
-A low score in this lab is often not a “business logic bug.”
-
-It is usually a prompt engineering problem:
-
-- instructions are unclear
-- tools are underspecified
-- validation order is weak
-- refusal behavior is underspecified
-
-That is exactly what this lab is meant to teach.
+- unclear instructions
+- underspecified tools
+- poor validation order
+- weak refusal rules

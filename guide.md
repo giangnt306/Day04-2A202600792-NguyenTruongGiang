@@ -1,273 +1,109 @@
-# Student Guide
+# Guide
 
-## 1. Purpose Of This Lab
+## 1. Start With The Baseline
 
-This lab is about improving agent behavior, not just making code execute.
-
-You will build an electronics order agent and raise its score by improving:
-
-- the system prompt
-- the tool schema
-- the guardrails
-- the grounded response behavior
-
-## 2. Big Picture
-
-The agent must do this workflow:
-
-1. find candidate products
-2. confirm exact product details
-3. get a discount
-4. calculate totals
-5. save the order
-
-The grader checks whether your agent actually behaves this way.
-
-## 3. Code Structure
-
-### `src/`
-
-This is the student implementation area.
-
-Key files:
-
-- `src/agent/graph.py`
-- `src/utils/data_store.py`
-- `src/core/schemas.py`
-- `src/core/llm.py`
-
-### `simple_solution/`
-
-This is the weak baseline.
-
-Use it to understand what poor prompt/tool design looks like:
-
-- vague system prompt
-- loose tool interfaces
-- weaker control over clarification and guardrails
-
-### `data/`
-
-Important files:
-
-- `products.json`
-- `graded_cases.json`
-- `expected_orders/`
-
-### `grade/`
-
-- `grade/scoring.py`
-
-This is the grader that compares your outputs against expected behavior.
-
-## 4. What You Need To Improve
-
-### A. System prompt
-
-Your prompt should clearly tell the model:
-
-- when to clarify
-- when to refuse
-- when not to call tools
-- which tool to call next
-- what facts must come only from tools
-- what the final answer should contain
-
-Weak prompts create most of the failures in this lab.
-
-### B. Tool schema
-
-Tool schema is part of prompt engineering.
-
-Strong schema helps the model understand:
-
-- required fields
-- valid argument shapes
-- dependencies between tools
-- which outputs must be passed to later steps
-
-Weak schema causes:
-
-- wrong arguments
-- missing customer data
-- skipped validation
-- invalid saved orders
-
-### C. Guardrails
-
-The agent should refuse:
-
-- fake invoices
-- manual discount overrides
-- stock bypasses
-- catalog bypasses
-- requests to ignore policy
-
-The refusal should happen before tool use.
-
-### D. Clarification
-
-Before any tool call, the model should make sure it has:
-
-- customer name
-- phone number
-- email
-- shipping address
-- at least one product request with quantity
-
-If any field is missing, it should ask a short clarification question and stop.
-
-## 5. Step-By-Step Path
-
-### Step 1: Run the baseline first
-
-Before you change `src/`, run:
+Run the weak baseline first:
 
 ```bash
 python grade/scoring.py --module simple_solution.agent.graph --provider google
 ```
 
-This gives you the weak baseline score.
+This gives you the starting score. Your job is to improve `src/` and beat it.
 
-You should use that score as your starting point.
+## 2. Understand The Task
 
-### Step 2: Read the cases
+The agent should handle four behaviors:
 
-Open `data/graded_cases.json`.
+- valid order creation
+- clarification when customer info is missing
+- refusal when the request breaks policy
+- grounded confirmation after a successful save
 
-Understand:
+For a valid order, the intended tool flow is:
 
-- normal success cases
-- stock failure cases
-- clarification cases
-- guardrail refusal cases
+1. `list_products`
+2. `get_product_details`
+3. `get_discount`
+4. `calculate_order_totals`
+5. `save_order`
 
-If you do not understand the case set, your prompt will stay generic.
+## 3. Where To Work
 
-### Step 3: Write the system prompt
+Focus on:
 
-This is the most important part.
+- `src/agent/graph.py`
+- `src/utils/data_store.py`
 
-Your prompt should explicitly say:
+Useful references:
+
+- `data/graded_cases.json`
+- `data/expected_orders/`
+- `simple_solution/`
+
+## 4. What To Improve
+
+### Prompt
+
+Your system prompt should make these rules explicit:
 
 - answer in Vietnamese
-- never invent product IDs, prices, discount, totals, or file paths
-- clarify before tool use if required customer data is missing
+- do not invent product facts, discounts, totals, or file paths
+- ask for missing customer fields before any tool call
 - refuse unsafe requests without calling tools
 - follow the expected tool order
 - save only after validation succeeds
 
-### Step 4: Strengthen the tool schema
+### Tool Schema
 
-Good tool design should make the model’s next step obvious.
+Good tool schema reduces agent mistakes. Prefer:
 
-Your tools should use:
-
-- clear names
+- clear tool names
 - clear docstrings
 - explicit required arguments
-- arguments that reflect workflow dependencies
+- structured inputs that match the workflow
 
-Good schema reduces model confusion.
+### Guardrails
 
-### Step 5: Test clarification behavior
+The agent should refuse requests that ask to:
 
-The model should not touch the catalog if the request is incomplete.
+- bypass stock
+- force fake discounts
+- create fake invoices
+- ignore the catalog or policy
 
-This is a common failure mode.
+### Clarification
 
-If the user forgets email or shipping address, the correct behavior is:
+Before tools, the agent should have:
 
-- ask for the missing field
-- stop
-- use zero tools
+- customer name
+- phone number
+- email
+- shipping address
+- at least one item and quantity
 
-### Step 6: Test refusal behavior
+If anything is missing, it should ask and stop.
 
-The model should reject requests like:
+## 5. How To Debug
 
-- ignore stock
-- apply 90% discount
-- create fake invoice
-- bypass catalog
+When a case fails, inspect:
 
-Correct behavior:
+- tool trace: did the model call tools too early or in the wrong order?
+- saved JSON: did it save the wrong payload or save when it should not?
+- final answer: was the clarification, refusal, or confirmation grounded and concise?
 
-- short refusal
-- no tool calls
+## 6. Improvement Loop
 
-### Step 7: Test grounded save behavior
+Use this loop:
 
-For valid orders, the model should:
+1. run `simple_solution`
+2. run `src`
+3. inspect failing cases
+4. tighten prompt
+5. tighten tool schema
+6. rerun the grader
 
-- pick correct product IDs
-- pass exact validated data through the workflow
-- save the correct JSON
-
-### Step 8: Run the grader on `src`
-
-Run:
+Run your implementation with:
 
 ```bash
 python grade/scoring.py --module src.agent.graph --provider google
 ```
-
-Compare that score against the baseline from `simple_solution/`.
-
-If the score is not clearly better, your prompt, tool schema, or guardrails still need work.
-
-## 6. How To Debug Your Score
-
-When a case fails, inspect:
-
-### Tool trace
-
-Ask:
-
-- did tools start too early?
-- did the model skip `get_product_details`?
-- did it call `save_order` on a bad request?
-
-### Saved JSON
-
-Ask:
-
-- is customer data present?
-- are product IDs correct?
-- is the discount correct?
-- is the order ID correct?
-- was the order saved when it should not have been?
-
-### Final answer
-
-Ask:
-
-- is it grounded in tool output?
-- is it concise?
-- does it clarify or refuse correctly?
-
-## 7. Recommended Improvement Loop
-
-Use this loop:
-
-1. run the grader on `simple_solution/`
-2. run the grader on `src/`
-3. inspect failing cases
-4. inspect tool trace
-5. strengthen prompt
-6. tighten tool schema
-7. rerun the grader on `src/`
-
-In this lab, score improvement should mostly come from better prompt engineering, not random extra logic.
-
-## 8. What Strong Work Looks Like
-
-A strong submission:
-
-- clarifies before tool use
-- refuses unsafe requests without tool calls
-- follows the intended workflow
-- saves exact expected JSON
-- stays grounded in tool output
-
-That is the standard you should aim for.
